@@ -79,7 +79,8 @@ export const detail = async (req: Request, res: Response): Promise<any> => {
 
 export const changeStatus = async (req: Request, res: Response): Promise<any> => {
 
-    const id: string = req.params.id;
+    try {
+        const id: string = req.params.id;
     const status: string = req.body.status;
     
     await Task.updateOne({
@@ -92,8 +93,34 @@ export const changeStatus = async (req: Request, res: Response): Promise<any> =>
         code: 200,
         message: "Change status task successfully",
     });
-
+    } catch (error) {
+        res.status(500).json({
+            message: "Error changing task status",
+    })
+    };
 }
 
+export const changeMulti = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const ids: string[] = req.body.ids;
+        const status: string = req.body.status;
+
+        await Task.updateMany({
+            _id: { $in: ids }
+        }, {
+            status: status
+        });
+
+        res.json({
+            code: 200,
+            message: "Change status tasks successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error changing tasks status",
+            error: error.message
+        });
+    }
+}
 
     
