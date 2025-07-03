@@ -11,14 +11,31 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             find['status'] = req.query.status;
         }
 
+        // sort
         const sort = {};
         if(req.query.sortKey && req.query.sortValue) {
             const sortKey = req.query.sortKey.toString();
             sort[sortKey] = req.query.sortValue;
         }
+        // end sort
+
+        // pagination
+        let limitItems = 2;
+        let page = 1;
+
+        if(req.query.page) {
+            page = parseInt(`${req.query.page}`);
+        }
+
+        if(req.query.limit) {
+            limitItems = parseInt(`${req.query.limit}`);
+        }
+
+        const skip = (page - 1) * limitItems;
+
+        // end pagination
         
-        
-        const tasks = await Task.find(find).sort(sort);
+        const tasks = await Task.find(find).sort(sort).skip(skip).limit(limitItems);
         res.json(tasks);
 
     } catch (error) {
