@@ -166,4 +166,26 @@ export const edit = async (req: Request, res: Response): Promise<any> => {
     }
 
 }
+
+export const deleteTask = async (req: Request, res: Response): Promise<any> => {
+    const id: string = req.params.id;
+
+    try {
+        await Task.updateOne({
+            _id: id,
+        }, {
+            deleted: true,
+            deletedAt: new Date()
+        });
+        res.json({
+            code: 200,
+            message: "Task deleted successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting task",
+            error: error.message
+        });
+    }
+}
     
