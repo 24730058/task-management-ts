@@ -76,4 +76,24 @@ export const detail = async (req: Request, res: Response): Promise<any> => {
         });
     }
 }
+
+export const changeStatus = async (req: Request, res: Response): Promise<any> => {
+
+    const id: string = req.params.id;
+    const status: string = req.body.status;
+    
+    await Task.updateOne({
+        _id: id,
+    }, {
+        status: status
+    });
+
+    res.json({
+        code: 200,
+        message: "Change status task successfully",
+    });
+
+}
+
+
     
