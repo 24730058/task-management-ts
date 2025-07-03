@@ -1,12 +1,25 @@
 import {Request, Response} from "express";
 import {Task} from "../models/task.model";
 
-export const index = async (req: Request, res: Response) => {
-    const tasks = await Task.find({
-        deleted: false
-    });
 
-    res.json(tasks);
+export const index = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const find = {
+            deleted: false
+        };
+        if(req.query.status) {
+            find['status'] = req.query.status;
+        }
+        
+        const tasks = await Task.find(find);
+        res.json(tasks);
+        
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retrieving tasks",
+            error: error.message
+        });
+    }
 }
 
 export const detail = async (req: Request, res: Response): Promise<any> => {
@@ -22,9 +35,10 @@ export const detail = async (req: Request, res: Response): Promise<any> => {
             return res.status(404).json({
                 message: "Task not found"
             });
-        } else {
-            return res.json(task);
         }
+
+        res.json(task);
+        
     } catch (error) {
         return res.status(500).json({
             message: "Error retrieving task",
