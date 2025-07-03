@@ -125,7 +125,7 @@ export const changeMulti = async (req: Request, res: Response): Promise<any> => 
 
 export const create = async (req: Request, res: Response): Promise<any> => {
     try {
-        
+
         const task = new Task(req.body);
         await task.save();
 
@@ -140,5 +140,30 @@ export const create = async (req: Request, res: Response): Promise<any> => {
             error: error.message
         });
     }
+}
+
+export const edit = async (req: Request, res: Response): Promise<any> => {
+    const id: string = req.params.id;
+    const title: string = req.body.title;
+    const content: string = req.body.content;
+
+    try {
+        await Task.updateOne({
+            _id: id,
+        }, {
+            title: title,
+            content: content
+        });
+        res.json({
+            code: 200,
+            message: "Task updated successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating task",
+            error: error.message
+        });
+    }
+
 }
     
