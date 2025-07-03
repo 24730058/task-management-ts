@@ -8,8 +8,6 @@ dotenv.config();
 import { connect } from "./config/database";
 connect();
 
-// Import the Task model
-import { Task } from "./models/task.model";
 
 // Import cors for handling CORS
 import cors from 'cors';
@@ -17,7 +15,7 @@ import cors from 'cors';
 // Initialize the Express application
 const app: Express = express();
 // Initialize the Express application
-const port = process.env.PORT || 3000;
+const port: string | number = process.env.PORT || 3000;
 
 app.use(express.json());
 // // Tất cả tên miền được phép truy cập vào
@@ -29,13 +27,8 @@ app.use(cors());
 // }
 // cors(corsOptions);
 // parse application/json
-app.get("/tasks", async (req: Request, res: Response) => {
-  const tasks = await Task.find({
-    deleted: false
-  });
-
-  res.json(tasks);
-});
+import { routesClient } from "./api/v1/routes/index.route";
+routesClient(app);
 
 
 app.listen(port, () => {
