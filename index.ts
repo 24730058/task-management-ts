@@ -8,6 +8,7 @@ dotenv.config();
 import { connect } from "./config/database";
 connect();
 
+import cookieParser from "cookie-parser";
 
 // Import cors for handling CORS
 import cors from 'cors';
@@ -27,9 +28,21 @@ app.use(cors());
 // }
 // cors(corsOptions);
 // parse application/json
-import { routesClient } from "./api/v1/routes/index.route";
-routesClient(app);
+app.use(cookieParser());
 
+// Import routes
+import { routesClient } from "./api/v1/routes/index.route";
+// Use the routes
+routesClient(app);
+import { JwtPayload } from "jsonwebtoken";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: string | JwtPayload;
+    }
+  }
+}
 
 app.listen(port, () => {
     console.log('Server is running on http://localhost:' + port);
