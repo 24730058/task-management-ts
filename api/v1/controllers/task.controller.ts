@@ -123,4 +123,22 @@ export const changeMulti = async (req: Request, res: Response): Promise<any> => 
     }
 }
 
+export const create = async (req: Request, res: Response): Promise<any> => {
+    try {
+        
+        const task = new Task(req.body);
+        await task.save();
+
+        res.status(201).json({
+            code: 201,
+            message: "Task created successfully",
+            data: task
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error creating task",
+            error: error.message
+        });
+    }
+}
     
