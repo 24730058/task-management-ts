@@ -10,10 +10,17 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         if(req.query.status) {
             find['status'] = req.query.status;
         }
+
+        const sort = {};
+        if(req.query.sortKey && req.query.sortValue) {
+            const sortKey = req.query.sortKey.toString();
+            sort[sortKey] = req.query.sortValue;
+        }
         
-        const tasks = await Task.find(find);
+        
+        const tasks = await Task.find(find).sort(sort);
         res.json(tasks);
-        
+
     } catch (error) {
         res.status(500).json({
             message: "Error retrieving tasks",
@@ -38,7 +45,7 @@ export const detail = async (req: Request, res: Response): Promise<any> => {
         }
 
         res.json(task);
-        
+
     } catch (error) {
         return res.status(500).json({
             message: "Error retrieving task",
